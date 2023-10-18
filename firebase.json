@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "kimsloth-dashboard-project",
+    "site": "kimsloth-portoflio-project",
     "public": "build",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [

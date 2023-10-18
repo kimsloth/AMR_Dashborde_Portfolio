@@ -26,7 +26,7 @@ const RobotControl = ({ isOpen }) => (
           accordionId="1"
           style={{ paddingBottom: "0px", backgroundColor: "rgb(223 232 244)" }}
         >
-          <Container>
+          <Container style={{ marginBottom: "10px" }}>
             <Row>
               <Col xs="6">R_001</Col>
 

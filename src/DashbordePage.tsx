@@ -1,527 +1,577 @@
+import { useEffect, useState } from "react";
 import {
-  Stage,
-  Layer,
-  Rect,
-  Image,
-  Group,
-  Text,
-  Transformer,
-  Line,
-} from "react-konva";
-import {
+  Button,
   Collapse,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  Label,
   Nav,
   NavItem,
+  NavLink,
   Navbar,
   NavbarBrand,
   Tooltip,
+  UncontrolledDropdown,
 } from "reactstrap";
-import { ComponentProps, useEffect, useRef, useState } from "react";
-import RobotControl from "./components/RobotControl";
-import RobotList from "./components/RobotList";
-import TableList from "./components/TableList";
-import JobList from "./components/JobList";
-import img from "./components/image/map.jpg";
-import Konva from "konva";
-import "./DashbordePage.css";
+import { RobotErrorLog } from "./components/RobotError";
+import { Chart1 } from "./components/Chart1";
+import { JobCount } from "./components/JobCount";
+import { RobotCurrent } from "./components/RobotCurrent";
+import { Form1 } from "./components/Form1";
+import { NetworkPing } from "./components/NetworkPing";
+import { Responsive, WidthProvider } from "react-grid-layout";
 import _ from "lodash";
 
-let color = "red";
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-export const DashbordePage = () => {
-  const mapRef: ComponentProps<typeof Group>["ref"] = useRef();
-  const imageRef: ComponentProps<typeof Image>["ref"] = useRef(null);
-  const robotRef = useRef();
-  const table1Ref = useRef();
-  const table2Ref = useRef();
-  const table3Ref = useRef();
-  const table4Ref = useRef();
-  const table5Ref = useRef();
-  const table6Ref = useRef();
-  let searchRef = useRef(null);
-  let controlRef = useRef(null);
+const initialLayouts = {
+  lg: [
+    {
+      x: 15,
+      y: 0,
+      w: 9,
+      h: 20,
+      i: "RobotErrorLog",
+      static: false,
+      minH: 6,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 0,
+      y: 0,
+      w: 7,
+      h: 12,
+      i: "Chart1",
+      static: false,
+      minH: 8,
+      minW: 6,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 0,
+      y: 12,
+      w: 7,
+      h: 8,
+      i: "JobCount",
+      static: false,
+      minH: 8,
+      minW: 7,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 7,
+      y: 0,
+      w: 8,
+      h: 13,
+      i: "RobotCurrent",
+      static: false,
+      minH: 6,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 7,
+      y: 13,
+      w: 8,
+      h: 7,
+      i: "NetworkPing",
+      static: false,
+      minH: 7,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+  ],
+  md: [
+    {
+      x: 0,
+      y: 1,
+      w: 10,
+      h: 8,
+      i: "RobotErrorLog",
+      static: false,
+      minH: 6,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 10,
+      y: 1,
+      w: 10,
+      h: 8,
+      i: "Chart1",
+      static: false,
+      minH: 8,
+      minW: 6,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 0,
+      y: 8,
+      w: 20,
+      h: 12,
+      i: "Form1",
+      static: false,
+      minH: 6,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 0,
+      y: 20,
+      w: 20,
+      h: 8,
+      i: "Chart2",
+      static: false,
+      minH: 6,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+  ],
+  sm: [
+    {
+      x: 0,
+      y: 1,
+      w: 6,
+      h: 8,
+      i: "RobotErrorLog",
+      static: false,
+      minH: 6,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 6,
+      y: 1,
+      w: 10,
+      h: 8,
+      i: "Chart1",
+      static: false,
+      minH: 8,
+      minW: 6,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 0,
+      y: 8,
+      w: 16,
+      h: 12,
+      i: "Form1",
+      static: false,
+      minH: 6,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 0,
+      y: 20,
+      w: 16,
+      h: 8,
+      i: "Chart2",
+      static: false,
+      minH: 6,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+  ],
+  xs: [
+    {
+      x: 0,
+      y: 1,
+      w: 12,
+      h: 8,
+      i: "RobotErrorLog",
+      static: false,
+      minH: 6,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 0,
+      y: 8,
+      w: 12,
+      h: 8,
+      i: "Chart1",
+      static: false,
+      minH: 8,
+      minW: 6,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 0,
+      y: 16,
+      w: 12,
+      h: 12,
+      i: "Form1",
+      static: false,
+      minH: 6,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+    {
+      x: 0,
+      y: 36,
+      w: 12,
+      h: 8,
+      i: "Chart2",
+      static: false,
+      minH: 6,
+      minW: 8,
+      maxW: 24,
+      maxH: 30,
+    },
+  ],
+};
 
-  const [image, setImage] = useState<HTMLImageElement>();
+let onoffChart1 = true;
+let onoffChart2 = false;
+let onoffRobotcurrent = false;
+let onoffPing = false;
+let onoffForm1 = true;
+let onoffRobotError = true;
 
-  const [isSelected, setIsSelected] = useState(false);
+export const MapPage = () => {
+  const [currentLayout, setCurrentLayout] = useState([]);
+  const [layouts, setLayouts] = useState(initialLayouts);
+  const [mounted, setMounted] = useState(false);
+  const [currentBreakpoint, setCurrentBreakpoint] = useState("lg");
+  const [compactType, setCompactType] = useState("vertical");
 
-  const [didTouchStage, setDidTouchStage] = useState(false);
-  const [size, setSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+  const _ = require("lodash");
 
-  const [stage, setStage] = useState({
-    scale: 1,
-    x: 0,
-    y: 0,
-  });
+  const [viewSettingTooltipOpen, setVewsettingTooltipOpen] = useState(false);
+  const viewSetToggle = () => setVewsettingTooltipOpen(!viewSetToggle);
 
-  const [robottooltipOpen, setrobotTooltipOpen] = useState(false);
-  const robotToggle = () => setrobotTooltipOpen(!robottooltipOpen);
+  const [gitTooltipOpen, setGitTooltipOpen] = useState(false);
+  const gitToggle = () => setGitTooltipOpen(!gitTooltipOpen);
 
-  const [taskTooltipOpen, setTaskTooltipOpen] = useState(false);
-  const taskToggle = () => setTaskTooltipOpen(!taskTooltipOpen);
-
-  const [mapTooltipOpen, setMapTooltipOpen] = useState(false);
-  const MapToggle = () => setMapTooltipOpen(!mapTooltipOpen);
-
-  const [tableTooltipOpen, setTableTooltipOpen] = useState(false);
-  const TableToggle = () => setTableTooltipOpen(!tableTooltipOpen);
-
-  const [robotControlIsOpen, setRobotControlIsOpen] = useState(false);
-  const toggleRobotControl = () => {
-    color = "white";
-
-    setRobotControlIsOpen(true);
+  const cols = {
+    lg: 24,
+    md: 20,
+    sm: 16,
+    xs: 12,
+    xxs: 8,
   };
-
-  const [robotListIsOpen, setRobotlistIsOpen] = useState(false);
-  const toggleRobotlist = () => {
-    setTableListIsOpen(false);
-    setRobotlistIsOpen(true);
-    setJoblistIsOpen(false);
-  };
-
-  const [tableListIsOpen, setTableListIsOpen] = useState(false);
-  const toggleTablelist = () => {
-    setTableListIsOpen(true);
-    setRobotlistIsOpen(false);
-    setJoblistIsOpen(false);
-  };
-
-  const [JobListIsOpen, setJoblistIsOpen] = useState(false);
-  const toggleJoblist = () => {
-    setTableListIsOpen(false);
-    setRobotlistIsOpen(false);
-    setJoblistIsOpen(true);
-  };
-
-  const transformerRef = useRef<any>();
-
-  const mapImage = new window.Image();
-  mapImage.src = img;
-
-  function selectHandler(data) {
-    setIsSelected(data);
-  }
 
   useEffect(() => {
     const titleElement = document.getElementsByTagName("title")[0];
-    titleElement.innerHTML = `Editable DshBorard`;
+    titleElement.innerHTML = `Map-Dashborard`;
   }, []);
 
-  useEffect(() => {
-    if (isSelected) {
-      transformerRef.current.nodes([
-        imageRef.current,
-        table1Ref.current,
-        table2Ref.current,
-        table3Ref.current,
-        table4Ref.current,
-        table5Ref.current,
-        table6Ref.current,
-        robotRef.current,
-      ]);
-    }
-  }, [isSelected]);
+  const deleteLayoutItem = (componentid) => {
+    const test = initialLayouts.lg.filter((x) => x.i !== componentid);
 
-  useEffect(() => {
-    if (didTouchStage) {
-      selectHandler(false);
-    }
-  }, [didTouchStage]);
-
-  useEffect(() => {
-    mapImage.onload = () => {
-      setImage(mapImage);
-    };
-
-    const tween = new Konva.Tween({
-      node: robotRef.current,
-      duration: 2,
-      x: 900,
-      y: 50,
-    });
-
-    const test = new Konva.Tween({
-      node: robotRef.current,
-      duration: 5,
-      x: 840 * imageRef.current.scaleX(),
-      yoyo: true,
-      onFinish: () => {},
-    });
-
-    test.play();
-  }, []);
-
-  let [inputFocus, setInputFocus] = useState(false);
-
-  useEffect(() => {
-    function handleOutside(e) {
-      if (controlRef.current && !controlRef.current.contains(e.target)) {
-        setRobotControlIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleOutside);
-    };
-  }, [controlRef]);
-
-  useEffect(() => {
-    function handleOutside(e) {
-      // current.contains(e.target) : 컴포넌트 특정 영역 외 클릭 감지를 위해 사용
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setInputFocus(false);
-
-        setTableListIsOpen(false);
-        setRobotlistIsOpen(false);
-        setJoblistIsOpen(false);
-      } else if (controlRef.current && !controlRef.current.contains(e.target)) {
-        setRobotControlIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleOutside);
-    };
-  }, [searchRef]);
-
-  useEffect(() => {
-    const checkSize = () => {
-      setSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
-
-    window.addEventListener("resize", checkSize);
-    return () => window.removeEventListener("resize", checkSize);
-  }, []);
-
-  const setMapFit = () => {
-    mapRef.current.x(0);
-    mapRef.current.y(-25.5);
-    setStage({
-      scale: 1.061208,
-      x: -63.533903999999886,
-      y: -34.27065131378061,
-    });
-
-    setImage(mapImage);
+    initialLayouts.lg = test;
+    setCurrentLayout(initialLayouts.lg);
   };
 
-  const handleWheel = (e) => {
-    e.evt.preventDefault();
+  const deleteDuplicteLayoutItem = () => {
+    const unique = [
+      ...new Map(initialLayouts.lg.map((m) => [m.i, m])).values(),
+    ];
 
-    const scaleBy = 1.02;
-    const stage = e.target.getStage();
-    const oldScale = stage.scaleX();
-    const mousePointTo = {
-      x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
-      y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale,
-    };
-
-    const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
-
-    setStage({
-      scale: newScale,
-      x: (stage.getPointerPosition().x / newScale - mousePointTo.x) * newScale,
-      y: (stage.getPointerPosition().y / newScale - mousePointTo.y) * newScale,
-    });
+    initialLayouts.lg = unique;
+    setCurrentLayout(initialLayouts.lg);
   };
 
-  function checkDeselect(e) {
-    const didTouchStage = e.target === e.target.getStage();
-    setDidTouchStage(didTouchStage);
-  }
+  const addNewLayoutItem = (componentid) => {
+    initialLayouts.lg.push({
+      w: 8,
+      h: 8,
+      x: 0,
+      y: 9,
+      i: componentid,
+      static: false,
+      minH: undefined,
+      minW: undefined,
+      maxW: 12,
+      maxH: 17,
+    });
+    currentLayout.push({
+      w: 8,
+      h: 8,
+      x: 0,
+      y: 9,
+      i: componentid,
+      static: false,
+      minH: undefined,
+      minW: undefined,
+      maxW: 12,
+      maxH: 17,
+    });
+
+    setCurrentLayout(initialLayouts.lg);
+  };
+
+  const onBreakpointChange = (breakpoint) => {
+    setCurrentBreakpoint(breakpoint);
+  };
+
+  const onLayoutChange = (layout, _layouts) => {
+    if (layout[layout.length - 1].w === 1) {
+      layout[layout.length - 1].w = 8;
+      layout[layout.length - 1].h = 8;
+    }
+    console.log(layout, "layout");
+    setCurrentLayout(layout);
+  };
+
+  const SwitchContent = ({ item, currentLayout }) => {
+    switch (item.i) {
+      case "RobotErrorLog":
+        return (
+          <RobotErrorLog
+            item={item}
+            currentLayout={
+              currentLayout.filter((x) => x.i === "RobotErrorLog")[0]
+            }
+          />
+        );
+      case "Form1":
+        return (
+          <Form1
+            item={item}
+            currentLayout={currentLayout.filter((x) => x.i === "Form1")[0]}
+          />
+        );
+      case "Chart1":
+        return (
+          <Chart1
+            item={item}
+            currentLayout={currentLayout.filter((x) => x.i === "Chart1")[0]}
+          />
+        );
+      case "JobCount":
+        return (
+          <JobCount
+            item={item}
+            currentLayout={currentLayout.filter((x) => x.i === "JobCount")[0]}
+          />
+        );
+      case "RobotCurrent":
+        return (
+          <RobotCurrent
+            item={item}
+            currentLayout={
+              currentLayout.filter((x) => x.i === "RobotCurrent")[0]
+            }
+          />
+        );
+      case "NetworkPing":
+        return (
+          <NetworkPing
+            item={item}
+            currentLayout={
+              currentLayout.filter((x) => x.i === "NetworkPing")[0]
+            }
+          />
+        );
+
+      default:
+        return <></>;
+    }
+  };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
-    <div style={{ backgroundColor: "#c5c3c3" }}>
-      <div style={{ backgroundColor: "#c8c8c8" }}>
-        <div>
-          <Navbar style={{ backgroundColor: "#57a2ea" }} expand="md">
-            <NavbarBrand href="/" className={"ms-3 me-2"}></NavbarBrand>
-            <Collapse navbar style={{ flexGrow: "unset" }}>
-              <Nav className="me-auto" navbar>
-                <NavItem>
-                  <i
-                    id="map"
-                    style={{
-                      fontSize: "30px",
-                      color: "white",
-                      paddingLeft: "5px",
-                      paddingRight: "5px",
+    <div>
+      <Navbar style={{ backgroundColor: "#58a2ed" }} expand="md">
+        <NavbarBrand href="/" className={"ms-3 me-2"}></NavbarBrand>
+        <Collapse navbar style={{ flexGrow: "unset" }}>
+          <Nav className="me-auto" navbar>
+            <UncontrolledDropdown inNavbar nav>
+              <DropdownToggle id="view" style={{ color: "white" }} nav>
+                View Setting
+              </DropdownToggle>
+
+              <DropdownMenu end style={{ minWidth: "100px" }}>
+                <DropdownItem toggle={false}>
+                  <Input
+                    type="checkbox"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        if (currentLayout.includes("Chart1")) {
+                        } else {
+                          addNewLayoutItem("Chart1");
+                          onoffChart1 = true;
+                        }
+                      } else {
+                        deleteLayoutItem("Chart1");
+                        onoffChart1 = false;
+                      }
                     }}
-                    onClick={setMapFit}
-                    className="bi bi-aspect-ratio"
-                  ></i>
-                  <Tooltip
-                    autohide={true}
-                    flip={true}
-                    isOpen={mapTooltipOpen}
-                    target="map"
-                    toggle={MapToggle}
-                    placement="bottom"
-                  >
-                    Map Fit
-                  </Tooltip>
-                </NavItem>
-                <NavItem>
-                  <i
-                    id="task"
-                    style={{
-                      fontSize: "30px",
-                      color: "white",
-                      paddingLeft: "5px",
-                      paddingRight: "5px",
+                    checked={onoffChart1}
+                  />
+                  <Label>Chart1</Label>
+                </DropdownItem>
+                <DropdownItem toggle={false}>
+                  <Input
+                    type="checkbox"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        if (currentLayout.includes("Form1")) {
+                        } else {
+                          addNewLayoutItem("Form1");
+                          onoffForm1 = true;
+                        }
+                      } else {
+                        deleteLayoutItem("Form1");
+                        onoffForm1 = false;
+                      }
                     }}
-                    onClick={toggleJoblist}
-                    className="bi bi-clipboard"
-                  ></i>
-                  <Tooltip
-                    autohide={true}
-                    flip={true}
-                    isOpen={taskTooltipOpen}
-                    target="task"
-                    toggle={taskToggle}
-                    placement="bottom"
-                  >
-                    Task
-                  </Tooltip>
-                </NavItem>
-                <NavItem>
-                  <i
-                    id="robot"
-                    style={{
-                      fontSize: "30px",
-                      color: "white",
-                      paddingLeft: "5px",
-                      paddingRight: "5px",
+                    checked={onoffForm1}
+                  />
+                  <Label>Form1</Label>
+                </DropdownItem>
+                <DropdownItem toggle={false}>
+                  <Input
+                    type="checkbox"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        if (currentLayout.includes("RobotErrorLog")) {
+                        } else {
+                          addNewLayoutItem("RobotErrorLog");
+
+                          onoffRobotError = true;
+                        }
+                      } else {
+                        deleteLayoutItem("RobotErrorLog");
+                        onoffRobotError = false;
+                      }
                     }}
-                    onClick={toggleRobotlist}
-                    className="bi bi-robot"
-                  ></i>
-                  <Tooltip
-                    autohide={true}
-                    flip={true}
-                    isOpen={robottooltipOpen}
-                    target="robot"
-                    toggle={robotToggle}
-                    placement="bottom"
-                  >
-                    Robot
-                  </Tooltip>
-                </NavItem>
-                <NavItem>
-                  <i
-                    id="table1"
-                    style={{
-                      fontSize: "30px",
-                      color: "white",
-                      paddingLeft: "5px",
-                      paddingRight: "5px",
+                    checked={onoffRobotError}
+                  />
+                  <Label>Error Log</Label>
+                </DropdownItem>
+                <DropdownItem toggle={false}>
+                  <Input
+                    type="checkbox"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        if (currentLayout.includes("JobCount")) {
+                        } else {
+                          addNewLayoutItem("JobCount");
+                          onoffChart2 = true;
+                        }
+                      } else {
+                        deleteLayoutItem("JobCount");
+                        onoffChart2 = false;
+                      }
                     }}
-                    onClick={toggleTablelist}
-                    className="bi bi-tablet"
-                  ></i>
-                  <Tooltip
-                    autohide={true}
-                    flip={true}
-                    isOpen={tableTooltipOpen}
-                    target="table1"
-                    toggle={TableToggle}
-                    placement="bottom"
-                  >
-                    Table
-                  </Tooltip>
-                </NavItem>
-              </Nav>
-            </Collapse>
-          </Navbar>
-        </div>
+                    checked={onoffChart2}
+                  />
+                  <Label>Job Count</Label>
+                </DropdownItem>
+                <DropdownItem toggle={false}>
+                  <Input
+                    type="checkbox"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        if (currentLayout.includes("RobotCurrent")) {
+                        } else {
+                          addNewLayoutItem("RobotCurrent");
+                          onoffRobotcurrent = true;
+                        }
+                      } else {
+                        deleteLayoutItem("RobotCurrent");
+                        onoffRobotcurrent = false;
+                      }
+                    }}
+                    checked={onoffRobotcurrent}
+                  />
+                  <Label>Robot Current</Label>
+                </DropdownItem>
+                <DropdownItem toggle={false}>
+                  <Input
+                    type="checkbox"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        if (currentLayout.includes("NetworkPing")) {
+                        } else {
+                          addNewLayoutItem("NetworkPing");
+                          onoffPing = true;
+                        }
+                      } else {
+                        deleteLayoutItem("NetworkPing");
+                        onoffPing = false;
+                      }
+                    }}
+                    checked={onoffPing}
+                  />
+                  <Label>Network Ping</Label>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
 
-        <div
-          ref={controlRef}
-          style={{
-            position: "absolute",
-            zIndex: 2,
-            left: "0%",
-            overflow: "hidden",
-          }}
-        >
-          <RobotControl isOpen={robotControlIsOpen} />
-        </div>
-
-        <div
-          ref={searchRef}
-          style={{
-            position: "absolute",
-            zIndex: 2,
-            right: "0%",
-            overflow: "hidden",
-          }}
-        >
-          {(function () {
-            if (robotListIsOpen) {
-              return (
-                <RobotList isOpen={robotListIsOpen} size={size.height - 216} />
-              );
-            } else if (tableListIsOpen)
-              return (
-                <TableList isOpen={tableListIsOpen} size={size.height - 216} />
-              );
-            else if (JobListIsOpen)
-              return (
-                <JobList isOpen={JobListIsOpen} size={size.height - 216} />
-              );
-            else {
-              return <div></div>;
-            }
-          })()}
-        </div>
-      </div>
-      <div>
-        <Stage
-          width={size.width - 267}
-          height={size.height - 60.5}
-          onWheel={handleWheel}
-          scaleX={stage.scale}
-          scaleY={stage.scale}
-          x={stage.x}
-          y={stage.y}
-          onMouseDown={checkDeselect}
-          onTouchStart={checkDeselect}
-        >
-          <Layer>
-            <Group
-              ref={mapRef}
-              draggable
-              keepRatio
-              onTap={() => {
-                selectHandler(true);
-              }}
-              onClick={() => {
-                selectHandler(true);
-              }}
-            >
-              {isSelected && (
-                <Transformer
-                  ref={transformerRef}
-                  enabledAnchors={[
-                    "top-left",
-                    "top-right",
-                    "bottom-left",
-                    "bottom-right",
-                  ]}
-                />
-              )}
-              <Image x={545} y={30} image={image} ref={imageRef} />
-
-              <Group ref={table1Ref} x={935} y={485}>
-                <Rect width={50} height={50} fill="red" shadowBlur={10} />
-                <Text
-                  text="1"
-                  width={50}
-                  height={50}
-                  fontSize={20}
-                  strokeWidth={1}
-                  verticalAlign="middle"
-                  align="center"
-                />
-              </Group>
-
-              <Group ref={table2Ref} x={1265} y={485}>
-                <Rect width={50} height={50} fill="green" shadowBlur={10} />
-                <Text
-                  text="2"
-                  width={50}
-                  height={50}
-                  fontSize={20}
-                  strokeWidth={1}
-                  verticalAlign="middle"
-                  align="center"
-                />
-              </Group>
-
-              <Group ref={table3Ref} x={935} y={570}>
-                <Rect width={50} height={50} fill="blue" shadowBlur={10} />
-                <Text
-                  width={50}
-                  height={50}
-                  fontSize={20}
-                  text="3"
-                  verticalAlign="middle"
-                  align="center"
-                />
-              </Group>
-              <Group ref={table4Ref} x={1265} y={570}>
-                <Rect width={50} height={50} fill="yellow" shadowBlur={10} />
-                <Text
-                  width={50}
-                  height={50}
-                  text="4"
-                  fontSize={20}
-                  verticalAlign="middle"
-                  align="center"
-                />
-              </Group>
-              <Group ref={table6Ref} x={1265} y={780}>
-                <Rect width={50} height={50} fill="red" shadowBlur={10} />
-                <Text
-                  width={50}
-                  height={50}
-                  text="6"
-                  fontSize={20}
-                  verticalAlign="middle"
-                  align="center"
-                />
-              </Group>
-              <Group ref={table5Ref} x={935} y={780}>
-                <Rect width={50} height={50} fill="red" shadowBlur={10} />
-                <Text
-                  width={50}
-                  height={50}
-                  text="5"
-                  fontSize={20}
-                  verticalAlign="middle"
-                  align="center"
-                />
-              </Group>
-
-              <Group
-                ref={robotRef}
-                x={1335}
-                y={860}
-                onClick={toggleRobotControl}
+            <NavItem>
+              <NavLink
+                id="git"
+                target="_blank"
+                style={{ color: "white" }}
+                href="https://github.com/kimsloth"
               >
-                <Rect width={50} height={50} fill="#3a4c99" shadowBlur={10} />
-
-                <Line
-                  x={40}
-                  y={44}
-                  points={[0, 0, 40, 0, 20, -30]}
-                  closed
-                  stroke="black"
-                  rotation={270}
-                  fill="#707278"
-                />
-
-                <Text
-                  x={0}
-                  y={-45}
-                  width={60}
-                  height={60}
-                  fontSize={20}
-                  text="R_001"
-                  verticalAlign="middle"
-                  align="center"
-                />
-              </Group>
-            </Group>
-          </Layer>
-        </Stage>
+                GitHub
+              </NavLink>
+              <Tooltip
+                autohide={true}
+                flip={true}
+                isOpen={gitTooltipOpen}
+                target="git"
+                toggle={gitToggle}
+                placement="bottom"
+              >
+                GitHub
+              </Tooltip>
+            </NavItem>
+          </Nav>
+        </Collapse>
+      </Navbar>
+      <div>
+        {mounted ? (
+          <ResponsiveReactGridLayout
+            className={"grid-layout"}
+            draggableHandle={".drag-header"}
+            rowHeight={50}
+            containerPadding={[5, 5]}
+            margin={[5, 5]}
+            cols={cols}
+            layouts={layouts}
+            onBreakpointChange={onBreakpointChange}
+            onLayoutChange={onLayoutChange}
+            measureBeforeMount={false}
+            compactType={compactType}
+            preventCollision={!compactType}
+          >
+            {layouts.lg.map((item) => {
+              return (
+                <div key={item.i} className={item.static ? "static" : ""}>
+                  <SwitchContent item={item} currentLayout={currentLayout} />
+                </div>
+              );
+            })}
+          </ResponsiveReactGridLayout>
+        ) : null}
       </div>
     </div>
   );

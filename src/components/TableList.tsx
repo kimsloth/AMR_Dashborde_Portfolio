@@ -148,7 +148,7 @@ const TableList = ({ isOpen, size }) => {
         <ReactTable
           data={data}
           columns={columns}
-          defaultPageSize={20}
+          defaultPageSize={25}
           className="-striped -highlight"
         />
       </div>

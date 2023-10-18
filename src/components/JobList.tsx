@@ -4,8 +4,6 @@ import _ from "lodash";
 import ReactTable from "react-table-6";
 
 const JobList = ({ isOpen, size }) => {
-  const now = new Date();
-
   const data = [
     {
       robot: "R_001",
@@ -126,7 +124,7 @@ const JobList = ({ isOpen, size }) => {
         <ReactTable
           data={data}
           columns={columns}
-          defaultPageSize={20}
+          defaultPageSize={25}
           className="-striped -highlight"
         />
       </div>

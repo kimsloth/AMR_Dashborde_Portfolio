@@ -98,12 +98,12 @@ const RobotList = ({ isOpen, size }) => {
       })}
     >
       <div className="sidebar-header-2">Robot List</div>
-
+      <hr color="red"></hr>
       <div className="side-menu-2">
         <ReactTable
           data={data}
           columns={columns}
-          defaultPageSize={20}
+          defaultPageSize={25}
           className="-striped -highlight"
         />
       </div>

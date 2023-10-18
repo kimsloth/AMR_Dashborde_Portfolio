@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Nav, NavItem, NavLink } from "reactstrap";
-import { MapPage } from "./MapPage";
-import { DashbordePage } from "./DashbordePage";
+import { MapPage } from "./DashbordePage";
+import { DashbordePage } from "./MapPage";
 import classNames from "classnames";
 
 export const PageLayout = () => {
@@ -72,24 +72,6 @@ export const PageLayout = () => {
                   to={"/map"}
                 >
                   Map
-                </NavLink>
-              </NavItem>
-
-              <NavItem>
-                <NavLink
-                  style={{ color: "white", fontSize: "18px" }}
-                  href="#map"
-                  to={"/map"}
-                >
-                  Portfolio
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  style={{ color: "white", fontSize: "18px" }}
-                  to={"/faq"}
-                >
-                  FAQ
                 </NavLink>
               </NavItem>
             </Nav>

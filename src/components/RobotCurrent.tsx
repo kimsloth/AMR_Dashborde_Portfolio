@@ -25,9 +25,7 @@ export function RobotCurrent({ item, currentLayout }) {
 
   return (
     <Card style={{ height: "100%", position: "relative", overflowX: "auto" }}>
-      <CardHeader className={"drag-header"}>
-        Chart2 - Drag & Drop of Heder
-      </CardHeader>
+      <CardHeader className={"drag-header"}>Robot Current</CardHeader>
       <CardBody>
         <div>
           <div>R_001</div>
@@ -40,6 +38,7 @@ export function RobotCurrent({ item, currentLayout }) {
             ]}
             activeStep={1}
           />
+          <hr color="red"></hr>
           <div>R_002</div>
           <Stepper
             steps={[
@@ -50,6 +49,7 @@ export function RobotCurrent({ item, currentLayout }) {
             ]}
             activeStep={4}
           />
+          <hr color="red"></hr>
           <div>R_003</div>
           <Stepper
             steps={[
@@ -60,6 +60,7 @@ export function RobotCurrent({ item, currentLayout }) {
             ]}
             activeStep={3}
           />
+          <hr color="red"></hr>
           <div>R_004</div>
           <Stepper
             steps={[
@@ -70,6 +71,7 @@ export function RobotCurrent({ item, currentLayout }) {
             ]}
             activeStep={2}
           />
+          <hr color="red"></hr>
           <div>R_005</div>
           <Stepper
             steps={[
