@@ -1,0 +1,34 @@
+:root {
+  iframe#webpack-dev-server-client-overlay {
+    display: none !important;
+  }
+}
+iframe#webpack-dev-server-client-overlay {
+  display: none !important;
+}
+.layoutJSON {
+  background: #ddd;
+  border: 1px solid black;
+  margin-top: 10px;
+  padding: 10px;
+}
+.columns {
+  -moz-columns: 200px;
+  -webkit-columns: 200px;
+  columns: 200px;
+}
+.drag-header {
+  cursor: all-scroll;
+}
+
+.menu-left {
+  width: 230px;
+  float: left;
+}
+.menu-left .nav-pills {
+  margin: 10px;
+}
+.content {
+  /* width: calc(100% - 230px); */
+  width: 100%;
+}
