@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "site": "kimsloth-dashboard-project",
+    "public": "y",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

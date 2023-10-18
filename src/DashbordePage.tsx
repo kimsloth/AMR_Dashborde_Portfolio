@@ -105,6 +105,12 @@ export const DashbordePage = () => {
   function selectHandler(data) {
     setIsSelected(data);
   }
+
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerHTML = `Editable DshBorard`;
+  }, []);
+
   useEffect(() => {
     if (isSelected) {
       transformerRef.current.nodes([

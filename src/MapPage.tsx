@@ -247,16 +247,10 @@ export const MapPage = () => {
     xxs: 8,
   };
 
-  const reducer = (componentName: string, componentView: boolean) => {
-    switch (componentName) {
-      case "Chart1": {
-        onoffChart1 = componentView;
-        break;
-      }
-      default:
-        return undefined;
-    }
-  };
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerHTML = `Map-Dashborard`;
+  }, []);
 
   const deleteLayoutItem = (componentid) => {
     const test = initialLayouts.lg.filter((x) => x.i !== componentid);
